@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\otp;
 use App\Models\User;
 use Carbon\Carbon;
+use App\Events\UserRegisteredEvent;
 
 class RegisterController extends Controller
 {
@@ -33,6 +34,8 @@ class RegisterController extends Controller
         $otp->valid_until = $otpExpires;
 
         $user->otp_code()->save($otp);
+        event(new UserRegisteredEvent($user));
+
 
         return response()->json([
             'response_code' => '00',
